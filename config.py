@@ -3,6 +3,8 @@ from pydantic_settings import BaseSettings
 
 class Config(BaseSettings):
     BOT_TOKEN: str
+    TARGET_GROUP_ID: int
+    JOB_USERNAME: str
 
     DEBUG: bool
     TIMEZONE: str

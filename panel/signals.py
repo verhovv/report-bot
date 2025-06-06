@@ -1,9 +1,12 @@
 from django.db.models.signals import post_save
+from django.db import transaction
 from django.dispatch import receiver
-from .models import User
+
+from panel.models import Template, Publication
+from panel.tasks import send_publication
 
 
-@receiver(post_save, sender=User)
-def handle_new_model_instance(sender, instance, created, **kwargs):
+@receiver(post_save, sender=Publication)
+def handle_publication_save(sender, instance, created, **kwargs):
     if created:
-        print(f"Создана новая запись {instance}")
+        transaction.on_commit(lambda: send_publication.delay(instance.id))

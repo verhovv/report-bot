@@ -13,17 +13,23 @@ from config import config
 import asyncio
 
 from handlers import router
-from middlewares import UserMiddleware
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
+
+from panel.models import Template
+
+
+async def on_startup():
+    await Template.objects.aget_or_create(name='Дневной отчет')
+    await Template.objects.aget_or_create(name='Вечерний отчет')
 
 
 async def main():
+    await on_startup()
+
     bot = Bot(token=config.BOT_TOKEN)
 
     dp = Dispatcher()
     dp.callback_query.outer_middleware(CallbackAnswerMiddleware())
-    dp.callback_query.outer_middleware(UserMiddleware())
-    dp.message.outer_middleware(UserMiddleware())
     dp.include_router(router)
 
     logging.basicConfig(level=logging.INFO)
