@@ -1,6 +1,11 @@
 from django.db import models
 
 
+class User(models.Model):
+    id = models.BigIntegerField(primary_key=True)
+    username = models.CharField(max_length=64)
+
+
 class Field(models.Model):
     class FieldTypes(models.TextChoices):
         INTEGER = 'int', 'Целое число'
@@ -38,6 +43,7 @@ class Group(models.Model):
 
     day_report = models.BooleanField(default=False)
     evening_report = models.BooleanField(default=False)
+    tried = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name} | {self.id} | {self.main_username}'

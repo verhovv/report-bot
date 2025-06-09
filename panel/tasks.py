@@ -1,7 +1,7 @@
 from celery import shared_task
 import requests
 
-from panel.models import Publication, Group
+from panel.models import Publication, Group, User
 from config import config
 
 
@@ -17,10 +17,12 @@ def remind(when):
             text = 'Напоминание! Нужно сделать вечерний отчет'
 
         if need:
+            user = User.objects.get(username=group.main_username)
+
             requests.post(
                 url=f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage',
                 data={
-                    'chat_id': group.id,
+                    'chat_id': user.id,
                     'text': f'@{group.main_username}\n{text}'
                 }
             )
@@ -49,9 +51,11 @@ def check_reports(when):
                 url=f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage',
                 data={
                     'chat_id': config.TARGET_GROUP_ID,
-                    'text': f'Группа: {group.name}\nОтветственный: @{group.main_username}'
+                    'text': f'Группа: {group.name} ({"Нет отчета" if not group.tried else "Отчет не по шаблону"})\nОтветственный: @{group.main_username}'
                 }
             )
+
+        group.tried = False
 
         if when == 'day':
             group.day_report = False

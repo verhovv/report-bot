@@ -4,9 +4,15 @@ from asgiref.sync import sync_to_async
 from datetime import datetime
 from django.utils import timezone
 
-from panel.models import Group, Template
+from panel.models import Group, Template, User
+from aiogram.filters.command import CommandStart
 
 router = Router()
+
+
+@router.message(CommandStart())
+async def command_start(message: Message):
+    await User.objects.aget_or_create(id=message.from_user.id, username=message.from_user.username)
 
 
 @router.message()
@@ -52,8 +58,11 @@ async def on_message(message: Message, bot: Bot):
 
         del fields[field_name]
 
+    group = await Group.objects.aget(id=message.chat.id)
+    group.tried = True
+    await group.asave()
+
     if not fields:
-        group = await Group.objects.aget(id=message.chat.id)
 
         if day:
             group.day_report = True
