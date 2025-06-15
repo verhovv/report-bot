@@ -23,7 +23,8 @@ async def on_message(message: Message, bot: Bot):
             not message.text.startswith(f'@{(await bot.get_me()).username}'):
         return
 
-    if (timezone.now().minute % 10) < 5:
+    now = timezone.now()
+    if now.hour < 12 or now.hour == 12 and now.minute <= 5:
         day = True
         template = await Template.objects.aget(name='Дневной отчет')
     else:

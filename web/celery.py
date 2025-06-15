@@ -12,22 +12,22 @@ app.conf.beat_max_loop_interval = 60
 app.conf.beat_schedule = {
     'day-reminder': {
         'task': 'panel.tasks.remind',
-        'schedule': crontab(minute='4,14,24,34,44,54'),
+        'schedule': crontab(hour='11', minute='55'),
         'args': ('day',),
     },
     'evening-reminder': {
         'task': 'panel.tasks.remind',
-        'schedule': crontab(minute='9,19,29,39,49,59'),
+        'schedule': crontab(hour='20', minute='55'),
         'args': ('evening',),
     },
     'day-checker': {
         'task': 'panel.tasks.check_reports',
-        'schedule': crontab(minute='5,15,25,35,45,55'),
+        'schedule': crontab(hour='12', minute='5'),
         'args': ('day',),
     },
     'evening-checker': {
         'task': 'panel.tasks.check_reports',
-        'schedule': crontab(minute='0,10,20,30,40,50'),
+        'schedule': crontab(hour='21', minute='5'),
         'args': ('evening',),
     },
 }
