@@ -42,7 +42,7 @@ def check_reports(when):
         if when == 'day' and not group.day_report \
                 or when == 'evening' and not group.evening_report:
             if is_good:
-                requests.post(
+                r = requests.post(
                     url=f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage',
                     data={
                         'chat_id': config.TARGET_GROUP_ID,
@@ -52,13 +52,15 @@ def check_reports(when):
 
                 is_good = False
 
-            requests.post(
+            r = requests.post(
                 url=f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage',
                 data={
                     'chat_id': config.TARGET_GROUP_ID,
                     'text': f'Группа: {group.name} ({"Нет отчета" if not group.tried else "Отчет не по шаблону"})\nОтветственный: @{group.main_username}'
                 }
             )
+
+            print(r.json())
 
         group.tried = False
 
@@ -70,13 +72,15 @@ def check_reports(when):
         group.save()
 
     if is_good:
-        requests.post(
+        r = requests.post(
             url=f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage',
             data={
                 'chat_id': config.TARGET_GROUP_ID,
                 'text': f'@{config.JOB_USERNAME}\n\nВ ходе {"дневного" if when == "day" else "вечернего"} контроля отчетов в чатах найма нарушения не обнаружены'
             }
         )
+
+        print(r.json())
 
 
 @shared_task
