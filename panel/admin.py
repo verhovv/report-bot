@@ -8,6 +8,11 @@ class FieldAdmin(admin.ModelAdmin):
     fields = ('name', 'type')
 
 
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    pass
+
+
 @admin.register(Group)
 class GroupAdmin(admin.ModelAdmin):
     list_display = ('name', 'id', 'main_username')

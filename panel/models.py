@@ -5,6 +5,9 @@ class User(models.Model):
     id = models.BigIntegerField(primary_key=True)
     username = models.CharField(max_length=64)
 
+    def __str__(self):
+        return self.username
+
 
 class Field(models.Model):
     class FieldTypes(models.TextChoices):

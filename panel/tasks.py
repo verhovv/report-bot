@@ -17,15 +17,20 @@ def remind(when):
             text = 'Напоминание! Нужно сделать вечерний отчет'
 
         if need:
-            user = User.objects.get(username=group.main_username)
+            try:
+                user = User.objects.get(username=group.main_username)
 
-            requests.post(
-                url=f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage',
-                data={
-                    'chat_id': user.id,
-                    'text': f'@{group.main_username}\n{text}'
-                }
-            )
+                requests.post(
+                    url=f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage',
+                    data={
+                        'chat_id': user.id,
+                        'text': f'@{group.main_username}\n{text}'
+                    }
+                )
+            except User.DoesNotExist:
+                print(f'Юзер с никнеймом "{group.main_username}" не существует')
+            except Exception as e:
+                print(f'При отправке уведомления возникла следующая ошибка: {e}')
 
 
 @shared_task
